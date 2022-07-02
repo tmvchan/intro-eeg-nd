@@ -22,7 +22,8 @@ def present(duration=100, eeg=None, save_fn=None):
     n_trials = 25 # there are 25 words and they should be presented once per run. How many runs do you plan on doing? Having only five runs per colour is not optimal
    
     # Setup trial list
-    image_type = np.random.randint(0, 5, n_trials)
+    type_list = [1 1 1 1 1 2 2 2 2 2 3 3 3 3 3 4 4 4 4 4 5 5 5 5 5]
+    image_type = np.random.shuffle(type_list)
     trials = DataFrame(dict(image_type=image_type, timestamp=np.zeros(n_trials)))
 
     def load_image(fn):
@@ -38,8 +39,34 @@ def present(duration=100, eeg=None, save_fn=None):
     yellow = list(map(load_image, glob(os.path.join(COLORS, "yellow", "*.png"))))
     green = list(map(load_image, glob(os.path.join(COLORS, "green", "*.png"))))
     purple = list(map(load_image, glob(os.path.join(COLORS, "purple", "*.png"))))
-
-    stim = [red, blue, yellow, green, purple]
+    
+    # so the words don't get loaded the same each time
+    red = np.random.shuffle(red)
+    blue = np.random.shuffle(blue)
+    yellow = np.random.shuffle(yellow)
+    green = np.random.shuffle(green)
+    purple = np.random.shuffle(purple)
+    
+    # go through list to make sure each one is picked once
+    stim_list = []
+    for ii, trial in trials.iterrows():
+        label = trials["image_type"].iloc[ii]
+        img_file = sample(red if label == 0  else (blue if label == 1 else (yellow if label == 2 else (green if label == 3 else purple))), 1)[0]
+        stim_list[ii] = img_file
+        
+        # remove from possibilities
+        if label == 0:
+            red.remove(img_file)
+        elif label == 1: 
+            blue.remove(img_file)
+        elif label == 2:
+            yellow.remove(img_file)
+        elif label == 3: 
+            green.remove(img_file)
+        else:
+            purple.remove(img_file)
+    
+    #stim = [red, blue, yellow, green, purple]
 
     # Show instructions
     show_instructions()
@@ -60,8 +87,9 @@ def present(duration=100, eeg=None, save_fn=None):
         core.wait(iti + np.random.rand() * jitter)
 
         # Select and display image
-        label = trials["image_type"].iloc[ii]
-        image = sample(red if label == 0  else (blue if label == 1 else (yellow if label == 2 else (green if label == 3 else purple))), 1)[0]
+        # label = trials["image_type"].iloc[ii]
+        # image = sample(red if label == 0  else (blue if label == 1 else (yellow if label == 2 else (green if label == 3 else purple))), 1)[0]
+        image = stim_file[ii]
         image.draw()
 
         # Push sample

@@ -109,7 +109,18 @@ def present(duration=120, eeg=None, save_fn=None, ver=1):
 
 def show_instructions(duration, ver):
 
-    if ver is 1:
+    if ver is 1: 
+        instruction_text = """
+        Welcome to the P300 experiment! 
+
+        Stay still, focus on the centre of the screen, and try not to blink. Try to count the number of times a cat appears.
+
+        This block will run for %s seconds.
+
+        Press spacebar to continue. 
+
+        """
+    elif ver is 2:
         instruction_text = """
         Welcome to the P300 experiment! 
 
@@ -120,7 +131,7 @@ def show_instructions(duration, ver):
         Press spacebar to continue. 
 
         """
-    elif ver is 2:
+    elif ver is 3:
         instruction_text = """
         Welcome to the P300 experiment! 
 
