@@ -29,7 +29,7 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
             n_trials = 30, iti = random.choice([1.4, 2, 2.75]), soa = 0.3, jitter = 0.4):
     
     record_duration = np.float32(duration)
-    markernames = [1, 2]
+    markernames = [1, 1]
 
     # Setup trial list
     image_type = np.full(n_trials, 1, dtype=int)
@@ -62,12 +62,14 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
 
     # Start EEG Stream, wait for signal to settle, and then pull timestamp for start point
     start = time()
-
+    
+    core.wait(iti + np.random.rand() * jitter)
+    
     # Iterate through the events
     for ii, trial in trials.iterrows():
         
         # Inter trial interval
-        core.wait(iti + np.random.rand() * jitter)
+        # core.wait(iti + np.random.rand() * jitter)
         
         # Select and display image
         label = trials["image_type"].iloc[ii]
@@ -88,18 +90,37 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
         # measure response
         respstart = clock.getTime()
 
-        # get response
-        keys = event.waitKeys(maxWait = 5, keyList = ["space"], timeStamped = clock)
-        
-        # offset
-        core.wait(soa)
-        mywin.flip()
-        
-        # reaction time calculation
-        rt = keys[0][1] - respstart 
+        # while loop: continue to loop until a key response is recorded
+        # we want this to loop until the end of SOA + ITI period
+
+        stimtime = soa + iti + np.random.rand() * jitter
+        # now_time = clock.getTime()
+        # timediff = now_time - respstart
+        rt = 0
+        win_flipped = 0
+        keyrec = 0
+
+        while clock.getTime() - respstart < stimtime:
+            # get response
+            keys = event.getKeys(keyList="space", timeStamped = clock)
+
+            if keys and keyrec == 0:
+                # reaction time calculation
+                rt = keys[0][1] - respstart
+                keyrec = 1 # only keep the first keypress
+            
+            if clock.getTime() - respstart > soa and win_flipped == 0:
+                mywin.flip()
+                win_flipped = 1 # flip the window only once 
+        else:
+            timediff = stimtime
+          
         # save RT
-        tempArray = [ii + 1, rt  *1000]
+        tempArray = [int(ii + 1), rt * 1000]
         responses.append(tempArray)
+        
+        mywin.flip()
+        core.wait(stimtime - timediff)
 
         #if len(event.getKeys()) > 0 or (time() - start) > record_duration:
         if (time() - start) > record_duration:
