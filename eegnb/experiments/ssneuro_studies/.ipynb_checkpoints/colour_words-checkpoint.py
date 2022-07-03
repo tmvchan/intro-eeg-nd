@@ -1,7 +1,7 @@
 import os
 from time import time
 from glob import glob
-from random import choice, sample
+from random import choice, sample, shuffle
 
 import numpy as np
 from pandas import DataFrame
@@ -22,15 +22,15 @@ def present(duration=100, eeg=None, save_fn=None):
     n_trials = 25 # there are 25 words and they should be presented once per run. How many runs do you plan on doing? Having only five runs per colour is not optimal
    
     # Setup trial list
-    type_list = [1 1 1 1 1 2 2 2 2 2 3 3 3 3 3 4 4 4 4 4 5 5 5 5 5]
-    image_type = np.random.shuffle(type_list)
+    image_type = np.array([0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4])
+    np.random.shuffle(image_type)
     trials = DataFrame(dict(image_type=image_type, timestamp=np.zeros(n_trials)))
 
     def load_image(fn):
         return visual.ImageStim(win=mywin, image=fn)
 
     # Setup graphics
-    mywin = visual.Window([1600, 900], color=[1,1,1], monitor="testMonitor", units="deg", fullscr=True)
+    mywin = visual.Window([1600, 900], color=[-1,-1,-1], monitor="testMonitor", units="deg", fullscr=True)
     mywin.flip()
     mywin.flip()
 
@@ -41,30 +41,41 @@ def present(duration=100, eeg=None, save_fn=None):
     purple = list(map(load_image, glob(os.path.join(COLORS, "purple", "*.png"))))
     
     # so the words don't get loaded the same each time
-    red = np.random.shuffle(red)
-    blue = np.random.shuffle(blue)
-    yellow = np.random.shuffle(yellow)
-    green = np.random.shuffle(green)
-    purple = np.random.shuffle(purple)
+    shuffle(red)
+    shuffle(blue)
+    shuffle(yellow)
+    shuffle(green)
+    shuffle(purple)
     
     # go through list to make sure each one is picked once
     stim_list = []
+    red_idx = 0
+    blue_idx = 0
+    yellow_idx = 0
+    green_idx = 0
+    purple_idx = 0
+    
     for ii, trial in trials.iterrows():
         label = trials["image_type"].iloc[ii]
-        img_file = sample(red if label == 0  else (blue if label == 1 else (yellow if label == 2 else (green if label == 3 else purple))), 1)[0]
-        stim_list[ii] = img_file
         
-        # remove from possibilities
+        # ensure that each file is picked once by indexing
         if label == 0:
-            red.remove(img_file)
-        elif label == 1: 
-            blue.remove(img_file)
+            img_file = red[red_idx]
+            red_idx += 1
+        elif label == 1:
+            img_file = blue[blue_idx]
+            blue_idx += 1
         elif label == 2:
-            yellow.remove(img_file)
-        elif label == 3: 
-            green.remove(img_file)
-        else:
-            purple.remove(img_file)
+            img_file = yellow[yellow_idx]
+            yellow_idx += 1
+        elif label == 3:
+            img_file = green[green_idx]
+            green_idx += 1
+        elif label == 4:
+            img_file = purple[purple_idx]
+            purple_idx += 1
+            
+        stim_list.append(img_file)
     
     #stim = [red, blue, yellow, green, purple]
 
@@ -87,9 +98,9 @@ def present(duration=100, eeg=None, save_fn=None):
         core.wait(iti + np.random.rand() * jitter)
 
         # Select and display image
-        # label = trials["image_type"].iloc[ii]
+        label = trials["image_type"].iloc[ii]
         # image = sample(red if label == 0  else (blue if label == 1 else (yellow if label == 2 else (green if label == 3 else purple))), 1)[0]
-        image = stim_file[ii]
+        image = stim_list[ii]
         image.draw()
 
         # Push sample
@@ -115,7 +126,7 @@ def present(duration=100, eeg=None, save_fn=None):
     text = visual.TextStim(
         win=mywin,
         text = "Thank you for participating. Press spacebar to exit the experiment.",
-        color=[-1, -1, -1],
+        color=[1, 1, 1],
         pos=[0, 5],
     )
     text.draw()
@@ -145,11 +156,11 @@ def show_instructions():
     # instruction_text = instruction_text % duration
 
     # graphics
-    mywin = visual.Window([1600, 900], color=[1,1,1], monitor="testMonitor", units="deg", fullscr=True)
+    mywin = visual.Window([1600, 900], color=[-1,-1,-1], monitor="testMonitor", units="deg", fullscr=True)
     mywin.mouseVisible = False
     
     # Instructions
-    text = visual.TextStim(win=mywin, text=instruction_text, color=[-1, -1, -1])
+    text = visual.TextStim(win=mywin, text=instruction_text, color=[1, 1, 1])
     text.draw()
     mywin.flip()
     event.waitKeys(keyList="space")
