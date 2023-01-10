@@ -253,7 +253,21 @@ class Canvas(app.Canvas):
         gloo.set_viewport(0, 0, *self.physical_size)
         self.program.draw('line_strip')
         [t.draw() for t in self.names + self.quality]
-        
+
+def view(
+    board_id=BoardIds.MUSE_2_BOARD,
+    serial_id=None
+):
+    
+    params = BrainFlowInputParams()
+    params.serial_number = serial_id
+    
+    board_shim = BoardShim(board_id, params)
+    board_shim.prepare_session()
+    board_shim.start_stream(450000, None)
+    Canvas(board_shim)
+    app.run()
+
 def main():
     BoardShim.enable_dev_board_logger()
     logging.basicConfig(level=logging.DEBUG)
@@ -272,7 +286,7 @@ def main():
     parser.add_argument('--streamer-params', type=str, help='streamer params', required=False, default='')
     parser.add_argument('--serial-number', type=str, help='serial number', required=False, default='')
     parser.add_argument('--board-id', type=int, help='board id, check docs to get a list of supported boards',
-                        required=False, default=BoardIds.SYNTHETIC_BOARD)
+                        required=False, default=BoardIds.MUSE_2_BOARD)
     parser.add_argument('--file', type=str, help='file', required=False, default='')
     args = parser.parse_args()
 
