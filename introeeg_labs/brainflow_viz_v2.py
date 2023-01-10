@@ -259,14 +259,26 @@ def view(
     serial_id=None
 ):
     
+    BoardShim.enable_dev_board_logger()
+    logging.basicConfig(level=logging.DEBUG)
+    
     params = BrainFlowInputParams()
     params.serial_number = serial_id
     
-    board_shim = BoardShim(board_id, params)
-    board_shim.prepare_session()
-    board_shim.start_stream(450000, None)
-    Canvas(board_shim)
-    app.run()
+    try:
+        board_shim = BoardShim(board_id, params)
+        board_shim.prepare_session()
+        board_shim.start_stream(450000, None)
+        Canvas(board_shim)
+        app.run()
+    except BaseException:
+        logging.warning('Exception', exc_info=True)
+    finally:
+        logging.info('End')
+        if board_shim.is_prepared():
+            logging.info('Releasing session')
+            board_shim.release_session()
+
 
 def main():
     BoardShim.enable_dev_board_logger()
