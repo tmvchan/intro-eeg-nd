@@ -10,6 +10,9 @@ Steady-State Response (ASSR) - stimulus presentation.
 
 from time import time
 
+from psychopy import prefs
+
+prefs.general["audioLib"] = ["pygame"]
 import numpy as np
 from pandas import DataFrame
 from psychopy import visual, core, event, sound

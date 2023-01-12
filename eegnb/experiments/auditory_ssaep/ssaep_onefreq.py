@@ -15,7 +15,7 @@ import numpy as np
 from pandas import DataFrame
 from psychopy import prefs
 
-prefs.general["audioLib"] = ["pygame"]
+#prefs.general["audioLib"] = ["pygame"]
 from psychopy import visual, core, event, sound
 from pylsl import StreamInfo, StreamOutlet
 from scipy import stats
@@ -88,18 +88,23 @@ def present(
         core.wait(iti + np.random.rand() * jitter)
 
         # Select stimulus frequency
-        ind = trials["stim_freq"].iloc[ii]
-        auds[ind].stop()
-        auds[ind].play()
-
+        #ind = trials["stim_freq"].iloc[ii]
+        #auds[ind].stop()
+        #auds[ind].play()
+        
+        # Create auditory sound object and play tone
+        aud = sound.Sound(am1)
+        aud.setVolume(0.8)
+        aud.play()
         # Push sample
+        
         if eeg:
             timestamp = time()
             if eeg.backend == "muselsl":
-                marker = [markernames[ind]]
+                marker = [markernames[0]]
                 marker = list(map(int, marker))
             else:
-                marker = markernames[ind]
+                marker = markernames[0]
             eeg.push_sample(marker=marker, timestamp=timestamp)
 
         # offset
