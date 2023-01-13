@@ -10,6 +10,9 @@ Steady-State Response (ASSR) - stimulus presentation.
 
 from time import time
 
+from psychopy import prefs
+
+prefs.general["audioLib"] = ["pygame"]
 import numpy as np
 from pandas import DataFrame
 from psychopy import visual, core, event, sound
@@ -22,9 +25,9 @@ def present(
     save_fn: None,
     duration=120,
     n_trials=2010,
-    iti=0.5,
+    iti=0.6,
     soa=3.0,
-    jitter=0.2,
+    jitter=0.1,
     volume=0.8,
     random_state=42,
     eeg=None,
@@ -95,7 +98,7 @@ def present(
     mywin.flip()
 
     # Show the instructions screen
-    show_instructions(10)
+    show_instructions(duration)
 
     # Start EEG Stream, wait for signal to settle, and then pull timestamp for start point
     if eeg:
@@ -110,9 +113,16 @@ def present(
 
         # Select stimulus frequency
         ind = trials["stim_freq"].iloc[ii]
-
-        auds[ind].stop()
-        auds[ind].play()
+        
+        # Create sound object and play (to avoid quieting issue)
+        if ind == 0:
+            aud = sound.Sound(am1)
+            aud.setVolume(0.8)
+        else:
+            aud = sound.Sound(am2)
+            aud.setVolume(0.8)
+        
+        aud.play()
 
         # Push sample
         if eeg:
@@ -145,7 +155,7 @@ def present(
 def show_instructions(duration):
 
     instruction_text = """
-    Welcome to the aMMN experiment!
+    Welcome to the SSAEP experiment!
 
     Stay still, focus on the centre of the screen, and try not to blink.
 
