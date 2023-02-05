@@ -76,7 +76,7 @@ def present(
 
 	
 	# Show the instructions screen
-    show_instructions(10)
+    show_instructions(duration)
     
 
     # start the EEG stream=

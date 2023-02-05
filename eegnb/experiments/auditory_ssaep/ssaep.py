@@ -32,7 +32,7 @@ def present(
     random_state=42,
     eeg=None,
     cf1=900,
-    amf1=45,
+    amf1=50,
     cf2=770,
     amf2=40.018,
     sample_rate=44100,
