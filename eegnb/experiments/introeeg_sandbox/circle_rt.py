@@ -21,7 +21,7 @@ from eegnb.stimuli import RED_CIRCLE
 from PIL import Image
 # im = Image.open("red_circle.png")
 
-__title__ = "Spiderhead 2.0"
+__title__ = "Circle RT"
 
 
 

@@ -97,7 +97,7 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
         stimtime = soa + iti + np.random.rand() * jitter
         # now_time = clock.getTime()
         # timediff = now_time - respstart
-        rt = None
+        rt = 0
         win_flipped = 0
         keyrec = 0
 
@@ -117,10 +117,7 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
             timediff = stimtime
           
         # save RT
-        if rt is None:
-            tempArray = [int(ii + 1), 'No Response']
-        else:
-            tempArray = [int(ii + 1), rt * 1000]
+        tempArray = [int(ii + 1), rt * 1000]
         responses.append(tempArray)
         
         mywin.flip()

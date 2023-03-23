@@ -1,3 +1,7 @@
+# An attempt to ensure that I can code a gambling task into the PsychoPy environment.
+# T. M. Vanessa Chan
+# March 2023
+
 from psychopy import prefs
 #change the pref libraty to PTB and set the latency mode to high precision
 prefs.hardware['audioLib'] = 'PTB'
@@ -18,22 +22,18 @@ from eegnb import generate_save_fn
 from eegnb.devices.eeg import EEG
 from eegnb.stimuli import RED_CIRCLE
 
-from PIL import Image
-# im = Image.open("red_circle.png")
-
-__title__ = "Spiderhead 2.0"
-
+__title__ = "Gambling Task"
 
 
 def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
             n_trials = 30, iti = random.choice([1.4, 2, 2.75]), soa = 0.3, jitter = 0.4):
     
     record_duration = np.float32(duration)
-    markernames = [1, 1]
+    markernames = [1, 2]
 
     # Setup trial list
-    image_type = np.full(n_trials, 1, dtype=int)
-    trials = DataFrame(dict(image_type=image_type, timestamp=np.zeros(n_trials)))
+    trial_type = np.random.randint(0, 2, n_trials)
+    trials = DataFrame(dict(trial_type=trial_type, timestamp=np.zeros(n_trials)))
 
     def load_image(fn):
         return visual.ImageStim(win=mywin, image=fn)
@@ -43,8 +43,8 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
     # Setup graphics
     mywin = visual.Window([1600, 900], monitor="testMonitor", units="deg", fullscr=True)
 
-    RedCirc = list(map(load_image, glob(os.path.join(RED_CIRCLE, "*.png"))))
-    stim = RedCirc
+    #RedCirc = list(map(load_image, glob(os.path.join(RED_CIRCLE, "*.png"))))
+    #stim = RedCirc
     clock = core.Clock()
     responses = []
 
@@ -71,8 +71,10 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
         # Inter trial interval
         # core.wait(iti + np.random.rand() * jitter)
         
-        # Select and display image
-        label = trials["image_type"].iloc[ii]
+        # Select condition
+        label = trials["trial_type"].iloc[ii]
+        
+        # Based on condition, draw the appropriate stimulus
         image = choice(RedCirc)
         image.draw()
 
@@ -97,7 +99,7 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
         stimtime = soa + iti + np.random.rand() * jitter
         # now_time = clock.getTime()
         # timediff = now_time - respstart
-        rt = None
+        rt = 0
         win_flipped = 0
         keyrec = 0
 
@@ -117,10 +119,7 @@ def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
             timediff = stimtime
           
         # save RT
-        if rt is None:
-            tempArray = [int(ii + 1), 'No Response']
-        else:
-            tempArray = [int(ii + 1), rt * 1000]
+        tempArray = [int(ii + 1), rt * 1000]
         responses.append(tempArray)
         
         mywin.flip()
