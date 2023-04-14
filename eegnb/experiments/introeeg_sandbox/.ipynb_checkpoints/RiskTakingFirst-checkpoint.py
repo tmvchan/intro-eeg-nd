@@ -32,7 +32,7 @@ from time import time
 from eegnb import generate_save_fn
 from eegnb.devices.eeg import EEG
 
-def present(duration = 300, eeg: EEG = None, save_fn = None):
+def present(duration = 300, eeg: EEG = None, save_fn = None, subject = None, session = None):
 
     # Run 'Before Experiment' code from code_3
     caseVal = 0
@@ -51,16 +51,22 @@ def present(duration = 300, eeg: EEG = None, save_fn = None):
         'participant': '',
         'session': '001',
     }
-    # --- Show participant info dialog --
-    dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
-    if dlg.OK == False:
-        core.quit()  # user pressed cancel
+    ## --- Show participant info dialog --
+    #dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
+    #if dlg.OK == False:
+    #    core.quit()  # user pressed cancel
     expInfo['date'] = data.getDateStr()  # add a simple timestamp
     expInfo['expName'] = expName
     expInfo['psychopyVersion'] = psychopyVersion
 
+    if subject == None:
+        subject = 0
+    if session == None:
+        session = 1
+    date = data.getDateStr()
+    
     # Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
-    filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
+    filename = _thisDir + os.sep + u'data/%s_%s_%s' % (subject, expName, date)
 
     # An ExperimentHandler isn't essential but helps with data saving
     thisExp = data.ExperimentHandler(name=expName, version='',
@@ -97,9 +103,9 @@ def present(duration = 300, eeg: EEG = None, save_fn = None):
     # Setup iohub keyboard
     ioConfig['Keyboard'] = dict(use_keymap='psychopy')
 
-    ioSession = '1'
-    if 'session' in expInfo:
-        ioSession = str(expInfo['session'])
+    ioSession = str(session)
+    #if 'session' in expInfo:
+    #    ioSession = str(expInfo['session'])
     ioServer = io.launchHubServer(window=win, **ioConfig)
     eyetracker = None
 
@@ -119,7 +125,7 @@ def present(duration = 300, eeg: EEG = None, save_fn = None):
     if eeg:
         if save_fn is None:  # If no save_fn passed, generate a new unnamed save file
             random_id = random.randint(1000,10000)
-            save_fn = generate_save_fn(eeg.device_name, "color_knowledge", random_id, random_id, "unnamed")
+            save_fn = generate_save_fn(eeg.device_name, "risk_taking", random_id, random_id, "unnamed")
             print(
                 f"No path for a save file was passed to the experiment. Saving data to {save_fn}"
             )
@@ -573,8 +579,9 @@ def present(duration = 300, eeg: EEG = None, save_fn = None):
         
                 # Push sample
                 if eeg:
-                    timestamp = time()
-                    eeg.push_sample(marker=marker, timestamp=timestamp)
+                    if frameN == 0:
+                        timestamp = time()
+                        eeg.push_sample(marker=marker, timestamp=timestamp)
 
         # --- Ending Routine "trial" ---
         for thisComponent in trialComponents:
@@ -665,10 +672,6 @@ def present(duration = 300, eeg: EEG = None, save_fn = None):
             # refresh the screen
             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                 win.flip()
-                
-                if eeg:
-                    timestamp = time()
-                    eeg.push_sample(marker=marker, timestamp=timestamp)
 
         # --- Ending Routine "feedback" ---
         for thisComponent in feedbackComponents:
@@ -792,6 +795,11 @@ def present(duration = 300, eeg: EEG = None, save_fn = None):
             # refresh the screen
             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                 win.flip()
+                
+                if eeg:
+                    if frameN == 0:
+                        timestamp = time()
+                        eeg.push_sample(marker=marker, timestamp=timestamp)
 
         # --- Ending Routine "feedback_2" ---
         for thisComponent in feedback_2Components:
@@ -811,6 +819,9 @@ def present(duration = 300, eeg: EEG = None, save_fn = None):
     # Flip one final time so any remaining win.callOnFlip() 
     # and win.timeOnFlip() tasks get executed before quitting
     win.flip()
+    # Cleanup
+    if eeg:
+        eeg.stop()
 
     # these shouldn't be strictly necessary (should auto-save)
     thisExp.saveAsWideText(filename+'.csv', delim='auto')

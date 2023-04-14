@@ -1,0 +1,224 @@
+0.7692 	WARNING 	We strongly recommend you activate the PTB sound engine in PsychoPy prefs as the preferred audio engine. Its timing is vastly superior. Your prefs are currently set to use ['sounddevice', 'PTB', 'pyo', 'pygame'] (in that order).
+22.0474 	WARNING 	User requested fullscreen with size [1024  768], but screen is actually [2048, 1152]. Using actual size
+23.2748 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x000001A379FB7D60>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x000001A33FE50190>, multiSample=False, name='window1', numSamples=2, pos=(2048, 0), screen=0, size=array([2048, 1152]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+23.2750 	EXP 	window1: mouseVisible = True
+23.2751 	EXP 	window1: mouseVisible = False
+23.2752 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+23.2752 	EXP 	window1: recordFrameIntervals = False
+23.4421 	EXP 	window1: recordFrameIntervals = True
+23.7736 	EXP 	Screen (0) actual frame rate measured at 59.71Hz
+23.7736 	EXP 	window1: recordFrameIntervals = False
+25.8841 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1, 1, 1]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+31.0734 	EXP 	textbox: autoLog = True
+31.0734 	EXP 	textbox2: autoLog = True
+31.0734 	EXP 	scoreboard: autoLog = True
+31.0734 	EXP 	textbox_3: autoLog = True
+31.0734 	EXP 	txt1: autoLog = True
+31.0734 	EXP 	txt2: autoLog = True
+31.0734 	EXP 	textbox_2: autoLog = True
+31.0734 	EXP 	text: autoDraw = True
+34.5844 	DATA 	Mouse: Left button down, pos=(1631,575)
+34.6845 	DATA 	Mouse:  Left button up, pos=(1631,575)
+37.3203 	EXP 	Created sequence: random, trialTypes=1, nReps=10, seed=None
+37.3205 	EXP 	New trial (rep=0, index=0): None
+37.4670 	DATA 	Keypress: space
+37.4713 	EXP 	text: autoDraw = False
+37.4713 	EXP 	textbox: autoDraw = True
+37.4713 	EXP 	textbox2: autoDraw = True
+37.4713 	EXP 	scoreboard: autoDraw = True
+38.1571 	DATA 	Keypress: left
+38.3195 	EXP 	textbox_3: autoDraw = True
+39.0527 	DATA 	Keypress: left
+39.0592 	EXP 	textbox: autoDraw = False
+39.0592 	EXP 	textbox2: autoDraw = False
+39.0592 	EXP 	scoreboard: autoDraw = False
+39.0592 	EXP 	textbox_3: autoDraw = False
+39.0592 	EXP 	txt1: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+39.0592 	EXP 	txt2: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+39.5372 	EXP 	txt1: autoDraw = True
+39.5372 	EXP 	txt2: autoDraw = True
+39.5372 	EXP 	textbox_2: autoDraw = True
+42.5237 	EXP 	New trial (rep=1, index=0): None
+42.5673 	EXP 	txt1: autoDraw = False
+42.5673 	EXP 	txt2: autoDraw = False
+42.5673 	EXP 	textbox_2: autoDraw = False
+42.5673 	EXP 	txt1: autoDraw = False
+42.5673 	EXP 	txt2: autoDraw = False
+42.5673 	EXP 	textbox_2: autoDraw = False
+42.5673 	EXP 	scoreboard: autoDraw = True
+42.6396 	EXP 	textbox: autoDraw = True
+42.6396 	EXP 	textbox2: autoDraw = True
+43.5410 	EXP 	textbox_3: autoDraw = True
+44.3615 	DATA 	Keypress: left
+44.3670 	EXP 	textbox: autoDraw = False
+44.3670 	EXP 	textbox2: autoDraw = False
+44.3670 	EXP 	scoreboard: autoDraw = False
+44.3670 	EXP 	textbox_3: autoDraw = False
+44.3670 	EXP 	txt1: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+44.3670 	EXP 	txt2: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+44.8417 	EXP 	txt1: autoDraw = True
+44.8417 	EXP 	txt2: autoDraw = True
+44.8417 	EXP 	textbox_2: autoDraw = True
+47.8284 	EXP 	New trial (rep=2, index=0): None
+47.9176 	EXP 	txt1: autoDraw = False
+47.9176 	EXP 	txt2: autoDraw = False
+47.9176 	EXP 	textbox_2: autoDraw = False
+47.9176 	EXP 	txt1: autoDraw = False
+47.9176 	EXP 	txt2: autoDraw = False
+47.9176 	EXP 	textbox_2: autoDraw = False
+47.9176 	EXP 	scoreboard: autoDraw = True
+47.9446 	EXP 	textbox: autoDraw = True
+47.9446 	EXP 	textbox2: autoDraw = True
+48.8451 	EXP 	textbox_3: autoDraw = True
+49.5784 	DATA 	Keypress: left
+49.5838 	EXP 	textbox: autoDraw = False
+49.5838 	EXP 	textbox2: autoDraw = False
+49.5838 	EXP 	scoreboard: autoDraw = False
+49.5838 	EXP 	textbox_3: autoDraw = False
+49.5838 	EXP 	txt1: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+49.5838 	EXP 	txt2: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+50.0792 	EXP 	txt1: autoDraw = True
+50.0792 	EXP 	txt2: autoDraw = True
+50.0792 	EXP 	textbox_2: autoDraw = True
+53.0660 	EXP 	New trial (rep=3, index=0): None
+53.1123 	EXP 	txt1: autoDraw = False
+53.1123 	EXP 	txt2: autoDraw = False
+53.1123 	EXP 	textbox_2: autoDraw = False
+53.1123 	EXP 	scoreboard: autoDraw = True
+53.1654 	EXP 	textbox: autoDraw = True
+53.1654 	EXP 	textbox2: autoDraw = True
+54.0661 	EXP 	textbox_3: autoDraw = True
+54.7388 	DATA 	Keypress: left
+54.7497 	EXP 	textbox: autoDraw = False
+54.7497 	EXP 	textbox2: autoDraw = False
+54.7497 	EXP 	scoreboard: autoDraw = False
+54.7497 	EXP 	textbox_3: autoDraw = False
+54.7497 	EXP 	txt1: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+54.7497 	EXP 	txt2: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+55.2502 	EXP 	txt1: autoDraw = True
+55.2502 	EXP 	txt2: autoDraw = True
+55.2502 	EXP 	textbox_2: autoDraw = True
+58.2366 	EXP 	New trial (rep=4, index=0): None
+58.2527 	EXP 	txt1: autoDraw = False
+58.2527 	EXP 	txt2: autoDraw = False
+58.2527 	EXP 	textbox_2: autoDraw = False
+58.2527 	EXP 	scoreboard: autoDraw = True
+58.3363 	EXP 	textbox: autoDraw = True
+58.3363 	EXP 	textbox2: autoDraw = True
+59.2368 	EXP 	textbox_3: autoDraw = True
+59.8704 	DATA 	Keypress: left
+59.8759 	EXP 	textbox: autoDraw = False
+59.8759 	EXP 	textbox2: autoDraw = False
+59.8759 	EXP 	scoreboard: autoDraw = False
+59.8759 	EXP 	textbox_3: autoDraw = False
+59.8759 	EXP 	txt1: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+59.8759 	EXP 	txt2: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+60.3543 	EXP 	txt1: autoDraw = True
+60.3543 	EXP 	txt2: autoDraw = True
+60.3543 	EXP 	textbox_2: autoDraw = True
+63.3413 	EXP 	New trial (rep=5, index=0): None
+63.4281 	EXP 	txt1: autoDraw = False
+63.4281 	EXP 	txt2: autoDraw = False
+63.4281 	EXP 	textbox_2: autoDraw = False
+63.4281 	EXP 	txt1: autoDraw = False
+63.4281 	EXP 	txt2: autoDraw = False
+63.4281 	EXP 	textbox_2: autoDraw = False
+63.4281 	EXP 	scoreboard: autoDraw = True
+63.4572 	EXP 	textbox: autoDraw = True
+63.4572 	EXP 	textbox2: autoDraw = True
+64.3577 	EXP 	textbox_3: autoDraw = True
+65.9457 	DATA 	Keypress: left
+65.9592 	EXP 	textbox: autoDraw = False
+65.9592 	EXP 	textbox2: autoDraw = False
+65.9592 	EXP 	scoreboard: autoDraw = False
+65.9592 	EXP 	textbox_3: autoDraw = False
+65.9592 	EXP 	txt1: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+65.9592 	EXP 	txt2: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+66.4427 	EXP 	txt1: autoDraw = True
+66.4427 	EXP 	txt2: autoDraw = True
+66.4427 	EXP 	textbox_2: autoDraw = True
+69.4296 	EXP 	New trial (rep=6, index=0): None
+69.4457 	EXP 	txt1: autoDraw = False
+69.4457 	EXP 	txt2: autoDraw = False
+69.4457 	EXP 	textbox_2: autoDraw = False
+69.4457 	EXP 	txt1: autoDraw = False
+69.4457 	EXP 	txt2: autoDraw = False
+69.4457 	EXP 	textbox_2: autoDraw = False
+69.4457 	EXP 	scoreboard: autoDraw = True
+69.5452 	EXP 	textbox: autoDraw = True
+69.5452 	EXP 	textbox2: autoDraw = True
+70.4463 	EXP 	textbox_3: autoDraw = True
+70.8530 	DATA 	Keypress: left
+70.8585 	EXP 	textbox: autoDraw = False
+70.8585 	EXP 	textbox2: autoDraw = False
+70.8585 	EXP 	scoreboard: autoDraw = False
+70.8585 	EXP 	textbox_3: autoDraw = False
+70.8585 	EXP 	txt1: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+70.8585 	EXP 	txt2: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+71.3467 	EXP 	txt1: autoDraw = True
+71.3467 	EXP 	txt2: autoDraw = True
+71.3467 	EXP 	textbox_2: autoDraw = True
+74.3334 	EXP 	New trial (rep=7, index=0): None
+74.3495 	EXP 	txt1: autoDraw = False
+74.3495 	EXP 	txt2: autoDraw = False
+74.3495 	EXP 	textbox_2: autoDraw = False
+74.3495 	EXP 	scoreboard: autoDraw = True
+74.4332 	EXP 	textbox: autoDraw = True
+74.4332 	EXP 	textbox2: autoDraw = True
+75.3334 	EXP 	textbox_3: autoDraw = True
+75.9537 	DATA 	Keypress: left
+75.9676 	EXP 	textbox: autoDraw = False
+75.9676 	EXP 	textbox2: autoDraw = False
+75.9676 	EXP 	scoreboard: autoDraw = False
+75.9676 	EXP 	textbox_3: autoDraw = False
+75.9676 	EXP 	txt1: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+75.9676 	EXP 	txt2: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+76.4511 	EXP 	txt1: autoDraw = True
+76.4511 	EXP 	txt2: autoDraw = True
+76.4511 	EXP 	textbox_2: autoDraw = True
+79.4375 	EXP 	New trial (rep=8, index=0): None
+79.4533 	EXP 	txt1: autoDraw = False
+79.4533 	EXP 	txt2: autoDraw = False
+79.4533 	EXP 	textbox_2: autoDraw = False
+79.4533 	EXP 	txt1: autoDraw = False
+79.4533 	EXP 	txt2: autoDraw = False
+79.4533 	EXP 	textbox_2: autoDraw = False
+79.4533 	EXP 	scoreboard: autoDraw = True
+79.5535 	EXP 	textbox: autoDraw = True
+79.5535 	EXP 	textbox2: autoDraw = True
+80.4545 	EXP 	textbox_3: autoDraw = True
+81.4752 	DATA 	Keypress: right
+81.4884 	EXP 	textbox: autoDraw = False
+81.4884 	EXP 	textbox2: autoDraw = False
+81.4884 	EXP 	scoreboard: autoDraw = False
+81.4884 	EXP 	textbox_3: autoDraw = False
+81.4884 	EXP 	txt1: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+81.4884 	EXP 	txt2: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+81.9726 	EXP 	txt1: autoDraw = True
+81.9726 	EXP 	txt2: autoDraw = True
+81.9726 	EXP 	textbox_2: autoDraw = True
+84.9590 	EXP 	New trial (rep=9, index=0): None
+84.9749 	EXP 	txt1: autoDraw = False
+84.9749 	EXP 	txt2: autoDraw = False
+84.9749 	EXP 	textbox_2: autoDraw = False
+84.9749 	EXP 	txt1: autoDraw = False
+84.9749 	EXP 	txt2: autoDraw = False
+84.9749 	EXP 	textbox_2: autoDraw = False
+84.9749 	EXP 	scoreboard: autoDraw = True
+85.0748 	EXP 	textbox: autoDraw = True
+85.0748 	EXP 	textbox2: autoDraw = True
+85.9759 	EXP 	textbox_3: autoDraw = True
+86.7131 	DATA 	Keypress: right
+86.7265 	EXP 	textbox: autoDraw = False
+86.7265 	EXP 	textbox2: autoDraw = False
+86.7265 	EXP 	scoreboard: autoDraw = False
+86.7265 	EXP 	textbox_3: autoDraw = False
+86.7265 	EXP 	txt1: foreColor = <psychopy.colors.Color: red, alpha=1.0>
+86.7265 	EXP 	txt2: foreColor = <psychopy.colors.Color: lime, alpha=1.0>
+87.2152 	EXP 	txt1: autoDraw = True
+87.2152 	EXP 	txt2: autoDraw = True
+87.2152 	EXP 	textbox_2: autoDraw = True
+90.2293 	EXP 	txt1: autoDraw = False
+90.2293 	EXP 	txt2: autoDraw = False
+90.2293 	EXP 	textbox_2: autoDraw = False
+98.0635 	EXP 	window1: mouseVisible = True
