@@ -442,4 +442,8 @@ class EEG:
         sorted_cols = sorted(df.columns)
         df = df[sorted_cols]
 
+<<<<<<< HEAD
         return df
+=======
+        return df
+>>>>>>> master
