@@ -1,8 +1,6 @@
 """ Abstraction for the various supported EEG devices.
-
     1. Determine which backend to use for the board.
     2.
-
 """
 
 import sys
@@ -69,7 +67,6 @@ class EEG:
     ):
         """The initialization function takes the name of the EEG device and determines whether or not
         the device belongs to the Muse or Brainflow families and initializes the appropriate backend.
-
         Parameters:
             device (str): name of eeg device used for reading data.
         """
@@ -189,7 +186,6 @@ class EEG:
         a utility function to determine the appropriate USB port to use based on the current operating system.
         Additionally, the system allows for passing a serial number in the case that they want to use either
         the BraintBit or the Unicorn EEG devices from the brainflow family.
-
         Parameters:
              serial_num (str or int): serial number for either the BrainBit or Unicorn devices.
         """
@@ -396,7 +392,6 @@ class EEG:
 
     def start(self, fn, duration=None):
         """Starts the EEG device based on the defined backend.
-
         Parameters:
             fn (str): name of the file to save the sessions data to.
         """
@@ -412,7 +407,6 @@ class EEG:
     def push_sample(self, marker, timestamp):
         """
         Universal method for pushing a marker and its timestamp to store alongside the EEG data.
-
         Parameters:
             marker (int): marker number for the stimuli being presented.
             timestamp (float): timestamp of stimulus onset from time.time() function.
@@ -448,4 +442,8 @@ class EEG:
         sorted_cols = sorted(df.columns)
         df = df[sorted_cols]
 
+<<<<<<< HEAD
         return df
+=======
+        return df
+>>>>>>> master

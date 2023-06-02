@@ -105,9 +105,7 @@ def show_instructions(duration):
     Welcome to the aMMN experiment! 
  
     Stay still, focus on the centre of the screen, and try not to blink. 
-
     This block will run for %s seconds.
-
     Press spacebar to continue. 
     
     """
