@@ -8,7 +8,9 @@ mne>=0.20.8
 seaborn==0.9.0
 pyriemann>=0.2.7
 jupyter
-muselsl>=2.0.2
+jupyterlab
+vispy
+muselsl==2.2.2
 brainflow>=4.8.2
 gdown
 matplotlib>=3.3.3
