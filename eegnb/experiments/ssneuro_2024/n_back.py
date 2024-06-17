@@ -11,12 +11,12 @@ from optparse import OptionParser
 import random
 
 import numpy as np
-from pandas import DataFrame
+from pandas import DataFrame, read_csv, Series
 from psychopy import visual, core, event
 
 from eegnb import generate_save_fn
 from eegnb.devices.eeg import EEG
-from eegnb.stimuli import FACE_HOUSE
+from eegnb import stimuli, experiments
 
 exp_dir = os.path.split(experiments.__file__)[0]
 
@@ -27,14 +27,17 @@ __title__ = "Verbal N-Back"
 
 
 def present(duration=120, eeg: EEG=None, save_fn=None,
-            n_trials = 2010, iti = 1, soa = 3, jitter = 0.2, ver=1):
+            n_trials = 2010, iti = 1, soa = 3, jitter = 0.2, subject=0, session=0, ver=1):
     
     record_duration = np.float32(duration)
     markernames = [1, 2] # non-repeat, repeat
 
     # Setup trial list
     trial_type = np.random.binomial(1, 0.3, n_trials) # number of 2-back repeats
-    trials = DataFrame(dict(trial_type=trial_type, timestamp=np.zeros(n_trials)))
+    # because we can't have the earliest 1 be any earlier than position 3, insert 2 zeros in front of every list
+    trial_type = np.insert(trial_type, 0, 0)
+    trial_type = np.insert(trial_type, 0, 0)
+    trials = DataFrame(dict(trial_type=trial_type, timestamp=np.zeros(len(trial_type))))
 
     word_lists = read_csv(word_list_file)
     
@@ -52,9 +55,6 @@ def present(duration=120, eeg: EEG=None, save_fn=None,
     mywin.flip()
     
     words = word_lists.iloc[:,ver-1]
-    #faces = list(map(load_image, glob(os.path.join(FACE_HOUSE, "faces", "*_3.jpg"))))
-    #houses = list(map(load_image, glob(os.path.join(FACE_HOUSE, "houses", "*.3.jpg"))))
-    #stim = [houses, faces]
 
     # Set up response array: saving trial information for output
     responses = []
@@ -71,6 +71,9 @@ def present(duration=120, eeg: EEG=None, save_fn=None,
             )
         eeg.start(save_fn, duration=record_duration + 5)
 
+    # create a clock for rt's
+    clock = core.Clock()
+        
     # Start EEG Stream, wait for signal to settle, and then pull timestamp for start point
     start = time()
 
@@ -130,13 +133,21 @@ def present(duration=120, eeg: EEG=None, save_fn=None,
         else:
             timediff = stimtime
 
-        # save RT
+        # save trial info into array
         if rt is None:
-            tempArray = [int(ii + 1), 'No Response']
+            reactiontime = 'No Response'
         else:
-            tempArray = [int(ii + 1), rt * 1000]
+            reactiontime = rt * 1000
+        
+        tempArray = [ii + 1, label + 1, word, reactiontime]
         responses.append(tempArray)
-
+        column_labels = [
+            "trial",
+            "target type",
+            "target",
+            "reaction time"
+        ]
+        
         mywin.flip()
         core.wait(stimtime - timediff)
 
@@ -152,25 +163,30 @@ def present(duration=120, eeg: EEG=None, save_fn=None,
 
         event.clearEvents()
 
+    # write behaviural output file
     directory = os.path.join(
         os.path.expanduser("~"),
         ".eegnb",
         "data",
-        "n_back_RT",
+        "n_back",
+        "behaviour",
         "subject" + str(subject),
-        "session" + str(session)
+        "session" + str(session),
     )
-
+    
     if not os.path.exists(directory):
         os.makedirs(directory)
-
+    
     outname = os.path.join(
         directory,
-        "subject" + str(subject) + "_session" + str(session) + "_RT.csv"
+        "subject"
+        + str(subject)
+        + "_session"
+        + str(session)
+        + ("_behOutput_%s.csv" % strftime("%Y-%m-%d-%H.%M.%S", gmtime())),
     )
-
-    output = np.array(responses)
-    np.savetxt(outname, output, delimiter=",")
+    output = DataFrame(responses)
+    output.to_csv(path_or_buf = outname, header = column_labels)
 
     # Cleanup
     if eeg:
@@ -194,7 +210,7 @@ def show_instructions(duration):
     instruction_text = instruction_text % duration
 
     # graphics
-    mywin = visual.Window([1600, 900], monitor="testMonitor", units="deg", fullscr=True)
+    mywin = visual.Window([1600, 900], color=[1,1,1], monitor="testMonitor", units="deg", fullscr=True)
 
     mywin.mouseVisible = False
 

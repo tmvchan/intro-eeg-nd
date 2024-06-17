@@ -4,7 +4,7 @@ prefs.hardware['audioLib'] = 'PTB'
 prefs.hardware['audioLatencyMode'] = 3
 
 import os
-from time import time
+from time import time, strftime, gmtime
 from glob import glob
 from random import choice, shuffle
 from optparse import OptionParser
@@ -18,7 +18,7 @@ from eegnb import generate_save_fn
 from eegnb.devices.eeg import EEG
 from eegnb.stimuli import MEN_WOMEN
 
-__title__ = "Color Knowledge Practice"
+__title__ = "N170 Memory Faces"
 
 # current problems
     # we need to input the behavioral task aspect of our experiment
@@ -27,10 +27,10 @@ __title__ = "Color Knowledge Practice"
     # we need to smooth out all of the image conditions due to our different sets of stimuli
 
 def present(duration=60, eeg: EEG=None, save_fn=None,
-            n_trials = 6, iti = 0.5, soa = 1, jitter = 0.2, subject=0, session=0):
+            n_trials = 40, iti = 3, soa = 1, jitter = 0.2, subject=0, session=0):
     
     record_duration = np.float32(duration)
-    markernames = [1, 2, 3]
+    markernames = [1, 2]
 
     def load_image(fn):
         return visual.ImageStim(win=mywin, image=fn)
@@ -39,17 +39,22 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
 
     # Setup graphics
     mywin = visual.Window([1600, 900], monitor="testMonitor", units="deg", fullscr=True)
-  
-    congruent = list(map(load_image, glob(os.path.join(PRACTICE_COLORS_OBJECTS, "congruent", "*_1.png"))))
-    incongruent = list(map(load_image, glob(os.path.join(PRACTICE_COLORS_OBJECTS, "incongruent", "*_2.png"))))
-    shuffle(congruent)
-    shuffle(incongruent)
-    stim = [congruent, incongruent]
+    
+    # save file names
+    men_fns = glob(os.path.join(MEN_WOMEN, "Men", "Study Men", "*.jpg"))
+    women_fns = glob(os.path.join(MEN_WOMEN, "Women", "Study Women", "*.jpg"))
+    
+    shuffle(men_fns)
+    shuffle(women_fns)
+    
+    men = list(map(load_image, men_fns))
+    women = list(map(load_image, women_fns))
+    stim = [men, women]
     
     # Setup trial list
     # image_type = np.random.binomial(1, 0.5, n_trials)
-    image_type = np.zeros(len(congruent))
-    image_type = np.append(image_type, np.full(len(incongruent), 1))
+    image_type = np.zeros(len(men))
+    image_type = np.append(image_type, np.full(len(women), 1))
     shuffle(image_type)
     trials = DataFrame(dict(image_type=image_type, timestamp=np.zeros(n_trials)))
 
@@ -75,8 +80,8 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
     responses = []
     
     # Set up list index counters
-    cong_idx = 0
-    incong_idx = 0
+    men_idx = 0
+    women_idx = 0
 
     # Iterate through the events
     for ii, trial in trials.iterrows():
@@ -85,11 +90,11 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
 
         label = trials["image_type"].iloc[ii]
         if label == 0:
-            image = congruent[cong_idx]
-            cong_idx += 1
+            image = men[men_idx]
+            men_idx += 1
         elif label == 1:
-            image = incongruent[incong_idx]
-            incong_idx += 1
+            image = women[women_idx]
+            women_idx += 1
         image.draw()
 
          # trial begins here: intertrial interval
@@ -101,77 +106,46 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
             if eeg.backend == "muselsl":
                 marker = [markernames[label]]
             else:
-                marker = markernames[label]
+                marker = markernames[int(label)]
             eeg.push_sample(marker=marker, timestamp=timestamp)
 
         mywin.flip()
         
-        t_respOnset = clock.getTime() # sets time for when response period began
-        keys = []
-        keys = event.waitKeys(maxWait=2, keyList=["1", "2"], timeStamped=clock) # locked to same clock as response
-        
         # Stimulus offset / response begin
-        #core.wait(soa)
+        core.wait(soa)
         
         # wait until response + resp offset
         mywin.flip()
-        
-        correct = 0
-        response = 0
-        
-        # classify response as correct / incorrect
-        if keys[0][0] == "1":
-            response = 1 # pressed congruent key
-            if label == 0:
-                correct = 1
-            else:
-                correct = 0
-        elif keys[0][0] == "2":
-            response = 2 # pressed incongruent key
-            if label == 0:
-                correct = 0
-            else:
-                correct = 1
-        else:
-            pass
-        
-        # save trial info into array
-        tempArray = [ii + 1, label + 1, response, correct]
-        responses.append(tempArray)
-        column_labels = [
-            "trial",
-            "target type",
-            "response",
-            "accuracy"
-        ]
         
         if len(event.getKeys()) > 0 or (time() - start) > record_duration:
             break
 
         event.clearEvents()
     
-    # write behaviural output file
+    # write out order that the faces were presented in
     directory = os.path.join(
         os.path.expanduser("~"),
         ".eegnb",
         "data",
-        "color_knowledge",
+        "men_women",
         "behaviour",
         "subject" + str(subject),
         "session" + str(session),
     )
+    
     if not os.path.exists(directory):
         os.makedirs(directory)
+    
     outname = os.path.join(
         directory,
         "subject"
         + str(subject)
         + "_session"
         + str(session)
-        + "_behOutput.csv",
+        + ("_behOutput_%s.csv" % strftime("%Y-%m-%d-%H.%M.%S", gmtime())),
     )
-    output = DataFrame(responses)
-    output.to_csv(path_or_buf = outname, header = column_labels)
+    output = DataFrame(men_fns, women_fns)
+    output.to_csv(path_or_buf = outname)
     
     # Cleanup
     if eeg:
@@ -184,13 +158,9 @@ def show_instructions():
   
     # change "side keyboard" portion and numbering depending on what we are able to figure out
     instruction_text = """
-    Welcome to the color knowledge experiment practice! 
+    Welcome to the face memory task!
     
-    Your task is to view the presented objects. When the "?" screen appears, rate the items on the side keyboard according to the below criteria:
-    
-    1 = congruent (like you see everyday), 2 = incongruent (abnormally colored), 3 = achromatic (black and white)
-    
-    You will have two seconds to make your rating before the next image appears. 
+    Please look at each face and carefully remember it, as you will be tested after.
  
     Stay still, focus on the center of the screen, and refrain from blinking. Let the experimenters know now if you have any questions.
 

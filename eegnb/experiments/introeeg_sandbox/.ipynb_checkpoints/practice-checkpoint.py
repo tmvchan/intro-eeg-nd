@@ -16,7 +16,7 @@ from psychopy import visual, core, event
 
 from eegnb import generate_save_fn
 from eegnb.devices.eeg import EEG
-from eegnb.stimuli import PRACTICE_COLORS_OBJECTS
+from eegnb.stimuli import MEN_WOMEN
 
 __title__ = "Color Knowledge Practice"
 

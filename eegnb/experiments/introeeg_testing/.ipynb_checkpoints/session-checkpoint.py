@@ -16,18 +16,12 @@ from psychopy import visual, core, event
 
 from eegnb import generate_save_fn
 from eegnb.devices.eeg import EEG
-from eegnb.stimuli import MEN_WOMEN
+from eegnb.stimuli import COLORS_OBJECTS
 
-__title__ = "Color Knowledge Practice"
+__title__ = "Color Knowledge Session"
 
-# current problems
-    # we need to input the behavioral task aspect of our experiment
-        # how would you rate the coloring of the object? 
-            # need to figure out timing aspects for this as well
-    # we need to smooth out all of the image conditions due to our different sets of stimuli
-
-def present(duration=60, eeg: EEG=None, save_fn=None,
-            n_trials = 6, iti = 0.5, soa = 1, jitter = 0.2, subject=0, session=0):
+def present(duration=200, eeg: EEG=None, save_fn=None,
+            n_trials = 78, iti = 0.5, soa = 1, jitter = 0.2, subject=0, session=0):
     
     record_duration = np.float32(duration)
     markernames = [1, 2, 3]
@@ -40,16 +34,19 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
     # Setup graphics
     mywin = visual.Window([1600, 900], monitor="testMonitor", units="deg", fullscr=True)
   
-    congruent = list(map(load_image, glob(os.path.join(PRACTICE_COLORS_OBJECTS, "congruent", "*_1.png"))))
-    incongruent = list(map(load_image, glob(os.path.join(PRACTICE_COLORS_OBJECTS, "incongruent", "*_2.png"))))
+    congruent = list(map(load_image, glob(os.path.join(COLORS_OBJECTS, "congruent", "*_1.png"))))
+    incongruent = list(map(load_image, glob(os.path.join(COLORS_OBJECTS, "incongruent", "*_2.png"))))
+    achromatic = list(map(load_image, glob(os.path.join(COLORS_OBJECTS, "achromatic", "*_3.png"))))
     shuffle(congruent)
     shuffle(incongruent)
-    stim = [congruent, incongruent]
+    shuffle(achromatic)
+    stim = [congruent, incongruent, achromatic]
     
     # Setup trial list
     # image_type = np.random.binomial(1, 0.5, n_trials)
     image_type = np.zeros(len(congruent))
     image_type = np.append(image_type, np.full(len(incongruent), 1))
+    image_type = np.append(image_type, np.full(len(achromatic), 2))
     shuffle(image_type)
     trials = DataFrame(dict(image_type=image_type, timestamp=np.zeros(n_trials)))
 
@@ -77,6 +74,7 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
     # Set up list index counters
     cong_idx = 0
     incong_idx = 0
+    achr_idx = 0
 
     # Iterate through the events
     for ii, trial in trials.iterrows():
@@ -90,6 +88,9 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
         elif label == 1:
             image = incongruent[incong_idx]
             incong_idx += 1
+        elif label == 2:
+            image = achromatic[achr_idx]
+            achr_idx += 1
         image.draw()
 
          # trial begins here: intertrial interval
@@ -107,8 +108,8 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
         mywin.flip()
         
         t_respOnset = clock.getTime() # sets time for when response period began
-        keys = []
-        keys = event.waitKeys(maxWait=2, keyList=["1", "2"], timeStamped=clock) # locked to same clock as response
+        
+        keys = event.waitKeys(maxWait=2, keyList=["1", "2", "3"], timeStamped=clock) # locked to same clock as response
         
         # Stimulus offset / response begin
         #core.wait(soa)
@@ -120,20 +121,32 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
         response = 0
         
         # classify response as correct / incorrect
-        if keys[0][0] == "1":
+        if not keys:
+            pass
+        elif keys[0][0] == "1":
             response = 1 # pressed congruent key
-            if label == 0:
-                correct = 1
-            else:
+            if label == 1:
                 correct = 0
+            if label == 2: 
+                correct = 0
+            else:
+                correct = 1
         elif keys[0][0] == "2":
             response = 2 # pressed incongruent key
             if label == 0:
                 correct = 0
+            if label == 2: 
+                correct = 0
+            else: 
+                correct = 1
+        elif keys[0][0] == "3": 
+            response = 3 # pressed achromatic key
+            if label == 0:
+                correct = 0
+            if label == 1:
+                correct = 0
             else:
                 correct = 1
-        else:
-            pass
         
         # save trial info into array
         tempArray = [ii + 1, label + 1, response, correct]
@@ -150,13 +163,13 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
 
         event.clearEvents()
     
-    # write behaviural output file
+    # write behavioral output file
     directory = os.path.join(
         os.path.expanduser("~"),
         ".eegnb",
         "data",
         "color_knowledge",
-        "behaviour",
+        "session_behavior",
         "subject" + str(subject),
         "session" + str(session),
     )
@@ -182,19 +195,16 @@ def present(duration=60, eeg: EEG=None, save_fn=None,
 
 def show_instructions():
   
-    # change "side keyboard" portion and numbering depending on what we are able to figure out
     instruction_text = """
-    Welcome to the color knowledge experiment practice! 
+    Welcome back to the experiment! 
     
-    Your task is to view the presented objects. When the "?" screen appears, rate the items on the side keyboard according to the below criteria:
+    During these trials, you will once again view objects and be asked to rate them according to their color condition. 
     
-    1 = congruent (like you see everyday), 2 = incongruent (abnormally colored), 3 = achromatic (black and white)
-    
-    You will have two seconds to make your rating before the next image appears. 
+    1 = congruent, 2 = incongruent, 3 = achromatic
  
-    Stay still, focus on the center of the screen, and refrain from blinking. Let the experimenters know now if you have any questions.
-
-    Press SPACEBAR to continue. 
+    Stay still, focus on the center of the screen, and refrain from blinking.
+    
+    Press SPACEBAR to continue.
     
     """
 
@@ -211,5 +221,4 @@ def show_instructions():
 
     mywin.mouseVisible = True
     mywin.close()
-    
-    
+     
