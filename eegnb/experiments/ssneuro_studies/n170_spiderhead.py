@@ -26,7 +26,7 @@ __title__ = "Spiderhead 2.0"
 
 
 def present(duration=150, eeg: EEG=None, save_fn=None, subject=0, session=0,
-            n_trials = 30, iti = random.choice([1.4, 2, 2.75]), soa = 0.3, jitter = 0.4):
+            n_trials = 30, iti = random.choice([1.4, 2, 2.75], soa = 0.3, jitter = 0.4):
     
     record_duration = np.float32(duration)
     markernames = [1, 1]
