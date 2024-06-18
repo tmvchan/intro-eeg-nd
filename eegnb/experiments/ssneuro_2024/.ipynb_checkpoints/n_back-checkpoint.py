@@ -163,7 +163,7 @@ def present(duration=120, eeg: EEG=None, save_fn=None,
 
         event.clearEvents()
 
-    # write behaviural output file
+    # write behavioural output file
     directory = os.path.join(
         os.path.expanduser("~"),
         ".eegnb",
