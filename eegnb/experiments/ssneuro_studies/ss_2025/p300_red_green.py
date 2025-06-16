@@ -8,7 +8,7 @@ from pandas import DataFrame
 from psychopy import visual, core, event
 
 from eegnb import generate_save_fn
-from eegnb.stimuli import RED_GREEN
+from eegnb.stimuli import RED_BLUE
 
 __title__ = "Visual P300 with response button"
 
@@ -31,13 +31,14 @@ def present(duration=120, eeg=None, save_fn=None, subject=0, session=0):
     # Setup graphics
     mywin = visual.Window([1600, 900], color=[1,1,1], monitor="testMonitor", units="deg", fullscr=True)
     clock = core.Clock()
+    
     responses = []
     target_type = []
     mywin.flip()
     mywin.flip()
     
-    targets = list(map(load_image, glob(os.path.join(RED_GREEN, "green_circle.png"))))
-    nontargets = list(map(load_image, glob(os.path.join(RED_GREEN, "red_circle.png"))))
+    targets = list(map(load_image, glob(os.path.join(RED_BLUE, "blue_circle.png"))))
+    nontargets = list(map(load_image, glob(os.path.join(RED_BLUE, "red_circle.png"))))
     stim = [nontargets, targets]
 
     # Show instructions
@@ -105,12 +106,11 @@ def present(duration=120, eeg=None, save_fn=None, subject=0, session=0):
           
         # save RT
         if rt is None:
-            tempArray = [int(ii + 1), 'No Response']
+            tempArray = [int(ii + 1), 'No Response', markernames[label]]
         else:
-            tempArray = [int(ii + 1), rt * 1000]
+            tempArray = [int(ii + 1), rt * 1000, markernames[label]]
         responses.append(tempArray)
-        target_type.append(markernames[label])
-
+        
         # offset
         core.wait(soa)
         mywin.flip()
@@ -120,6 +120,12 @@ def present(duration=120, eeg=None, save_fn=None, subject=0, session=0):
         event.clearEvents()
 
     # write behavioural output file
+    column_labels = [
+            "trial",
+            "target type",
+            "response"
+        ]
+    
     directory = os.path.join(
         os.path.expanduser("~"),
         ".eegnb",
@@ -139,8 +145,8 @@ def present(duration=120, eeg=None, save_fn=None, subject=0, session=0):
         + str(session)
         + ("_behOutput_%s.csv" % strftime("%Y-%m-%d-%H.%M.%S", gmtime())),
     )
-    output = DataFrame(target_type, responses)
-    output.to_csv(path_or_buf = outname)
+    output = DataFrame(responses)
+    output.to_csv(path_or_buf = outname, header = column_labels)
 
     # Goodbye Screen
     text = visual.TextStim(
