@@ -73,6 +73,14 @@ def present(duration=120, eeg=None, save_fn=None, subject=0, session=0):
                 marker = markernames[label]
             eeg.push_sample(marker=marker, timestamp=timestamp)
 
+        stimtime = soa + iti + np.random.rand() * jitter
+        # now_time = clock.getTime()
+        # timediff = now_time - respstart
+        rt = None
+        win_flipped = 0
+        keyrec = 0
+        keys = event.getKeys(keyList="space", timeStamped = clock)
+        
         mywin.flip()
 
         # measure response
@@ -82,16 +90,8 @@ def present(duration=120, eeg=None, save_fn=None, subject=0, session=0):
         # we want this to loop until the end of SOA + ITI period
         # RTs will be taken until the end of the SOA + ITI period (approx. 1.4-3 seconds).
 
-        stimtime = soa + iti + np.random.rand() * jitter
-        # now_time = clock.getTime()
-        # timediff = now_time - respstart
-        rt = None
-        win_flipped = 0
-        keyrec = 0
-
         while clock.getTime() - respstart < stimtime: 
             # get response
-            keys = event.getKeys(keyList="space", timeStamped = clock)
 
             if keys and keyrec == 0:
                 # reaction time calculation
