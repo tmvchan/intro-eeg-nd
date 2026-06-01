@@ -178,6 +178,8 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         win.flip()
         thisKey = event.waitKeys(keyList=["d"])
         event.clearEvents()
+        fixation.draw()
+        win.flip()
     
     # define end function
     def CoolDown():

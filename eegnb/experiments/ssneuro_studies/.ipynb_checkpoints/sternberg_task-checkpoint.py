@@ -152,11 +152,15 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
 
     #mywin = visual.Window([900, 500], monitor="testMonitor", units="deg", fullscr=False)
     if ver is 1: # letters
-        targets = list(glob(os.path.join(LETTER_SYMBOL, "letter-*.png")))
+        targets_paths = list(glob(os.path.join(LETTER_SYMBOL, "letter-*.png")))
     elif ver is 2: # digits
-        targets = list(glob(os.path.join(LETTER_SYMBOL, "D*.png")))
+        targets_paths = list(glob(os.path.join(LETTER_SYMBOL, "D*.png")))
     elif ver is 3: # weird symbols
-        targets = list(glob(os.path.join(LETTER_SYMBOL, "P*.png")))
+        targets_paths = list(glob(os.path.join(LETTER_SYMBOL, "P*.png")))
+    
+    # Pre-load PsychoPy Image Objects so there is 0 disk latency during the trials
+    targets = [visual.ImageStim(win=win, image=p) for p in targets_paths]
+
     
     # draw stimuli
     fCS_rt2 = fCS / math.sqrt(2)
@@ -177,6 +181,8 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         win.flip()
         thisKey = event.waitKeys(keyList=["d"])
         event.clearEvents()
+        fixation.draw()
+        win.flip()
     
     # define end function
     def CoolDown():
@@ -215,7 +221,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
             print(
                 f"No path for a save file was passed to the experiment. Saving data to {save_fn}"
             )
-        eeg.start(save_fn, duration=record_duration)
+        eeg.start(save_fn)
 
     for iTrial in range(0, n_trials):
 
@@ -231,7 +237,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         )
 
         if iTrial == 0:
-            AddToFlipTime(5)
+            tNextFlip[0] = globalClock.getTime() + 5.0
         fixation.draw()
         while globalClock.getTime() < tNextFlip[0]:
             pass
@@ -247,8 +253,8 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         # Loop through image_list to show all stimuli
         for ii, stim in enumerate(image_list):
             label = 0
-            stim_image = load_image(stim)
-            stim_image.draw()
+            stim_name = stim.image
+            stim.draw()
             win.logOnFlip(
                 level=logging.EXP, msg="Display list stim" #(%s)" % params["goStim"]
             )
@@ -274,7 +280,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
             while globalClock.getTime() < tNextFlip[0]:
                 pass
             
-            tempArray1 = [iTrial, stim]
+            tempArray1 = [iTrial, stim_name]
             stimlist.append(tempArray1)
             
             # Display the fixation cross
@@ -289,8 +295,8 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         # Draw probe stim
         if isYesTrial:
             label = 1
-            image_probe = choice(image_list)
-            image = load_image(image_probe)
+            image = choice(image_list)
+            probe_name = image.image
             image.draw()
             win.logOnFlip(
                 level=logging.EXP, msg="Display yes stim" #(%s)" % params["goStim"]
@@ -305,8 +311,8 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
                 eeg.push_sample(marker=marker, timestamp=timestamp)
         else:
             label = 2
-            image_probe = choice(image_other)
-            image = load_image(image_probe)
+            image = choice(image_other)
+            probe_name = image.image
             image.draw()
             win.logOnFlip(
                 level=logging.EXP, msg="Display no stim" #(%s)" % params["noGoStim"]
@@ -381,7 +387,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         else:
             rt[iTrial] = np.nan
         
-        tempArray = [iTrial, isYesTrial, resp_text, t, image_probe]
+        tempArray = [iTrial, isYesTrial, resp_text, t, probe_name]
         responses.append(tempArray)
         
         # Display the fixation cross
