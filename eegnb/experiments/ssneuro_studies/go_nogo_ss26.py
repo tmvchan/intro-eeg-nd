@@ -35,7 +35,8 @@ def present(subject, session, eeg=None, save_fn=None, goStimProb = 0.75, isi = 0
     # next make an outlet
     outlet = StreamOutlet(info)
     markernames = [1, 2]
-
+    record_duration = np.float32(duration)
+    
     # Setup log
     # position = np.random.binomial(1, 0.15, n_trials)
     # trials = DataFrame(dict(position=position, timestamp=np.zeros(n_trials)))

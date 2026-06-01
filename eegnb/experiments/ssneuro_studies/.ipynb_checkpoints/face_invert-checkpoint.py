@@ -69,7 +69,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         (duration - params["tStartup"] - params["tCoolDown"])
         / (params["ISI"] + params["stimDur"])
     )
-    
+    record_duration = np.float32(duration)
     screenRes = [800, 600]
 
     # create clocks and window
@@ -143,12 +143,16 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         return visual.ImageStim(win=win, image=filename)
 
     # Setup stimuli
-    if ver is 1: # thatcherized vs. inverted (hard)
-        thatcher = list(glob(os.path.join(FACES_INVERT, "thatcher", "*.jpg")))
-        control = list(glob(os.path.join(FACES_INVERT, "inverted", "*.jpg")))
-    elif ver is 2: # thatcherized vs. upright (easy)
-        thatcher = list(glob(os.path.join(FACES_INVERT, "thatcher", "*.jpg")))
-        control = list(glob(os.path.join(FACES_INVERT, "upright", "*.jpg")))       
+    if ver == 1: # thatcherized vs. inverted (hard)
+        thatcher_paths = list(glob(os.path.join(FACES_INVERT, "thatcher", "*.jpg")))
+        control_paths = list(glob(os.path.join(FACES_INVERT, "inverted", "*.jpg")))
+    elif ver == 2: # thatcherized vs. upright (easy)
+        thatcher_paths = list(glob(os.path.join(FACES_INVERT, "thatcher", "*.jpg")))
+        control_paths = list(glob(os.path.join(FACES_INVERT, "upright", "*.jpg")))       
+    
+    # Pre-load PsychoPy Image Objects so there is 0 disk latency during the trials
+    thatcher = [visual.ImageStim(win=win, image=p) for p in thatcher_paths]
+    control = [visual.ImageStim(win=win, image=p) for p in control_paths]    
     stim = [thatcher, control]
     stimlist = []
     
@@ -228,7 +232,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         )
 
         if iTrial == 0:
-            AddToFlipTime(5)
+            tNextFlip[0] = globalClock.getTime() + 5.0
         fixation.draw()
         while globalClock.getTime() < tNextFlip[0]:
             pass
@@ -240,8 +244,8 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         # Draw probe stim
         if isYesTrial:
             label = 0
-            image_probe = choice(thatcher)
-            image = load_image(image_probe)
+            image = choice(thatcher)
+            image_probe = image.image
             image.draw()
             win.logOnFlip(
                 level=logging.EXP, msg="Display yes stim" #(%s)" % params["goStim"]
@@ -256,8 +260,8 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
                 eeg.push_sample(marker=marker, timestamp=timestamp)
         else:
             label = 1
-            image_probe = choice(control)
-            image = load_image(image_probe)
+            image = choice(control)
+            image_probe = image.image
             image.draw()
             win.logOnFlip(
                 level=logging.EXP, msg="Display no stim" #(%s)" % params["noGoStim"]

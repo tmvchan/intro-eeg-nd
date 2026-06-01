@@ -38,6 +38,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         os.makedirs(directory)
 
     markernames = [1, 2, 3] # 1: stim list, 2: probe yes, 3: probe no
+    #record_duration = np.float32(duration)
 
     # code modified from https://github.com/djangraw/PsychoPyParadigms/blob/master/BasicExperiments/GoNoGoTask_d1.py
 
