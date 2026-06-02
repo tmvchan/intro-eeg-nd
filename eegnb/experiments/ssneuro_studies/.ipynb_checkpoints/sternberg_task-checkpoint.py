@@ -246,6 +246,11 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         # set up next win flip time after this one
         AddToFlipTime(isi + np.random.rand() * jitter)  # add to tNextFlip[0]
         
+        # If a late response pushed actual time past the next scheduled flip, 
+        # reset tNextFlip to the current time so it doesn't skip the first stimulus.
+        if globalClock.getTime() > tNextFlip[0]:
+            tNextFlip[0] = globalClock.getTime()
+        
         # Set up stimuli in list
         image_list = np.random.choice(targets, list_len, replace = False)
         image_other = [item for item in targets if item not in image_list] # for if the probe is not in list

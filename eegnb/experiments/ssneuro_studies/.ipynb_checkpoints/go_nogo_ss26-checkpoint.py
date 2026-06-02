@@ -175,6 +175,8 @@ def present(subject, session, eeg=None, save_fn=None, goStimProb = 0.75, isi = 0
         win.flip()
         thisKey = event.waitKeys(keyList=["d"])
         event.clearEvents()
+        fixation.draw()
+        win.flip()
     
     # define end function
     def CoolDown():
@@ -227,7 +229,7 @@ def present(subject, session, eeg=None, save_fn=None, goStimProb = 0.75, isi = 0
         )
 
         if iTrial == 0:
-            AddToFlipTime(2)
+            tNextFlip[0] = globalClock.getTime() + 5.0
         fixation.draw()
         while globalClock.getTime() < tNextFlip[0]:
             pass
