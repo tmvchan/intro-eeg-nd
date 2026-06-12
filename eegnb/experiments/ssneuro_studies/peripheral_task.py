@@ -12,18 +12,18 @@ import os
 import scipy.io
 
 from eegnb import generate_save_fn
-from eegnb.stimuli import FACES_INVERT
+from eegnb.stimuli import FACE_HOUSE
 
-__title__ = "Thatcherized face detection task"
+__title__ = "Face/House Center/Periphery Task"
 
-def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, jitter = 0, list_len = 4, ver = 1, duration = 120):
+def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb = 0.5, leftProb = 0.5, isi = 0.5, jitter = 0, duration = 120):
 
     # write behavioural output file
     directory = os.path.join(
         os.path.expanduser("~"),
         ".eegnb",
         "data",
-        "faces_invert",
+        "peripheral",
         "behaviour",
         "subject" + str(subject),
         "session" + str(session)
@@ -143,17 +143,13 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         return visual.ImageStim(win=win, image=filename)
 
     # Setup stimuli
-    if ver == 1: # thatcherized vs. inverted (hard)
-        thatcher_paths = list(glob(os.path.join(FACES_INVERT, "thatcher", "*.jpg")))
-        control_paths = list(glob(os.path.join(FACES_INVERT, "inverted", "*.jpg")))
-    elif ver == 2: # thatcherized vs. upright (easy)
-        thatcher_paths = list(glob(os.path.join(FACES_INVERT, "thatcher", "*.jpg")))
-        control_paths = list(glob(os.path.join(FACES_INVERT, "upright", "*.jpg")))       
+    face_paths = list(glob(os.path.join(FACE_HOUSE, "faces", "*_3.jpg")))
+    house_paths = list(glob(os.path.join(FACE_HOUSE, "houses", "*.3.jpg")))
     
     # Pre-load PsychoPy Image Objects so there is 0 disk latency during the trials
-    thatcher = [visual.ImageStim(win=win, image=p) for p in thatcher_paths]
-    control = [visual.ImageStim(win=win, image=p) for p in control_paths]    
-    stim = [thatcher, control]
+    faces = [visual.ImageStim(win=win, image=p) for p in face_paths]
+    houses = [visual.ImageStim(win=win, image=p) for p in house_paths]
+    stim = [faces, houses]
     stimlist = []
     
     # draw stimuli
@@ -224,11 +220,13 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
 
         # Decide Trial Params
         isYesTrial = random.random() < yesProb
+        isCenterTrial = random.random() < centerProb
+        isLeftTrial = random.random() < leftProb
 
         # display info to experimenter
         print(
             (
-                "Running Trial %d: isGo = %d, ISI = %.1f"
+                "Running Trial %d: isFace = %d, ISI = %.1f"
                 % (iTrial, isYesTrial, params["ISI"])
             )
         )
@@ -244,13 +242,20 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
         AddToFlipTime(isi + np.random.rand() * jitter)  # add to tNextFlip[0]
                    
         # Draw probe stim
-        if isYesTrial:
+        if isYesTrial: # faces
             label = 0
-            image = choice(thatcher)
+            image = choice(faces)
             image_probe = image.image
+
+            if not isCenterTrial:
+                if isLeftTrial:
+                    image.pos = (-15.0, 0)
+                else:
+                    image.pos = (15.0, 0)
+
             image.draw()
             win.logOnFlip(
-                level=logging.EXP, msg="Display yes stim" #(%s)" % params["goStim"]
+                level=logging.EXP, msg="Display face stim" #(%s)" % params["goStim"]
             )
             timestamp = time()
             #outlet.push_sample([markernames[0]], timestamp)
@@ -260,13 +265,20 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
                 else:
                     marker = markernames[label]
                 eeg.push_sample(marker=marker, timestamp=timestamp)
-        else:
+        else: # houses
             label = 1
-            image = choice(control)
+            image = choice(houses)
             image_probe = image.image
+
+            if not isCenterTrial:
+                if isLeftTrial:
+                    image.pos = (-15.0, 0)
+                else:
+                    image.pos = (15.0, 0)
+
             image.draw()
             win.logOnFlip(
-                level=logging.EXP, msg="Display no stim" #(%s)" % params["noGoStim"]
+                level=logging.EXP, msg="Display house stim" #(%s)" % params["noGoStim"]
             )
             timestamp = time()
             #outlet.push_sample([markernames[1]], timestamp)
@@ -384,7 +396,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, isi = 0.5, 
     # display results
     message1.setText("That's the end! Press space to continue. Here are your results:")
     message2.setText(
-        "N trials = %d \nYes accuracy = %d/%d (%0.2f) \nNo accuracy = %d/%d (%0.2f) \nMean Correct Trials RT = %0.2f"
+        "N trials = %d \nFace accuracy = %d/%d (%0.2f) \nHouse accuracy = %d/%d (%0.2f) \nMean Correct Trials RT = %0.2f"
         % (
             n_trials,
             hits_yes,
