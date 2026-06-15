@@ -160,12 +160,9 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
         tNextFlip[0] += tIncrement
 
     # define start function
-    def show_instructions(ver):
-        message1.setText("Welcome to the experiment! On each trial, you will be shown a face.")
-        if ver is 1:
-            message2.setText("Press 'f' if you notice the facial features are altered in some way while upside down, and 'j' if the face is just upside down.")
-        else:
-            message2.setText("Press 'f' if you notice the facial features are altered in some way while upside down, and 'j' if the face is upright.")
+    def show_instructions():
+        message1.setText("Welcome to the experiment! On each trial, you will be shown a face or a house.")
+        message2.setText("Press 'f' if you see a face, and 'j' if you see a house. Please keep your eyes locked on the center of the screen.")
         message3.setText("Respond as quickly and accurately as possible. Press 'd' to begin.")
         win.logOnFlip(level=logging.EXP, msg="Display TheStart")
         message1.draw()
@@ -205,7 +202,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
     correct = 0
     rt = np.zeros((n_trials, 1))
     
-    show_instructions(ver)
+    show_instructions()
     
     # start the EEG stream, will delay 5 seconds to let signal settle
     if eeg:
@@ -249,9 +246,9 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
 
             if not isCenterTrial:
                 if isLeftTrial:
-                    image.pos = (-15.0, 0)
+                    image.pos = (-20.0, 0)
                 else:
-                    image.pos = (15.0, 0)
+                    image.pos = (20.0, 0)
 
             image.draw()
             win.logOnFlip(
@@ -272,9 +269,9 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
 
             if not isCenterTrial:
                 if isLeftTrial:
-                    image.pos = (-15.0, 0)
+                    image.pos = (-20.0, 0)
                 else:
-                    image.pos = (15.0, 0)
+                    image.pos = (20.0, 0)
 
             image.draw()
             win.logOnFlip(
@@ -327,22 +324,27 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
         else:
             count_no += 1
 
+        if isCenterTrial:
+            TrialType = "Center"
+        else:
+            TrialType = "Periphery"
+            
         if isYesTrial:
             if respKey == "f":
                 hits_yes += 1
-                resp_text = "Yes"
+                resp_text = "Correct"
                 correct = 1
             else:
                 fa_yes += 1
-                resp_text = "No"
+                resp_text = "Incorrect"
         elif ~isYesTrial:
             if respKey == "j":
                 hits_no += 1
-                resp_text = "Yes"
+                resp_text = "Correct"
                 correct = 1
             else:
                 fa_no += 1
-                resp_text = "No"
+                resp_text = "Incorrect"
 
         # get RT for correct trials only
         if correct is 1:
@@ -350,7 +352,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
         else:
             rt[iTrial] = np.nan
         
-        tempArray = [iTrial, isYesTrial, resp_text, t, image_probe]
+        tempArray = [iTrial, TrialType, resp_text, t, image_probe]
         responses.append(tempArray)
         
         # Display the fixation cross
