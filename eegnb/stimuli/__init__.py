@@ -14,3 +14,4 @@ PRACTICE_COLORS_OBJECTS = path.join(path.dirname(__file__), "visual", "practice_
 COLOR_BW = path.join(path.dirname(__file__), "visual", "color_bw")
 HUMAN_ANIMAL = path.join(path.dirname(__file__), "visual", "human_animal")
 FACES_INVERT = path.join(path.dirname(__file__), "visual", "faces_invert")
+FACES_EMOTIONS = path.join(path.dirname(__file__), "visual", "faces_emotions")
