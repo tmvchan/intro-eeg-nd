@@ -63,11 +63,11 @@ def present(subject = 0, session = 0, duration=120, eeg=None, save_fn=None, ver=
 
     # Setup stimuli
     if ver is 1: # color is oddball
-        targets = list(glob(os.path.join(COLOR_BW, "color", "*.jpg")))
-        nontargets = list(glob(os.path.join(COLOR_BW, "bw", "*.jpg")))
+        targets = list(glob(os.path.join(COLOR_BW, "color", "art", "*.png")))
+        nontargets = list(glob(os.path.join(COLOR_BW, "bw", "art", "*.png")))
     elif ver is 2: # bw is oddball
-        targets = list(glob(os.path.join(COLOR_BW, "bw", "*.jpg")))
-        nontargets = list(glob(os.path.join(COLOR_BW, "color", "*.jpg")))       
+        targets = list(glob(os.path.join(COLOR_BW, "bw", "art", "*.png")))
+        nontargets = list(glob(os.path.join(COLOR_BW, "color", "art", "*.png")))       
     stim = [nontargets, targets]
     stimlist = []
     
