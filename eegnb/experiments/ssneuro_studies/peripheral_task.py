@@ -337,6 +337,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
             else:
                 fa_yes += 1
                 resp_text = "Incorrect"
+                correct = 0
         elif ~isYesTrial:
             if respKey == "j":
                 hits_no += 1
@@ -345,12 +346,14 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
             else:
                 fa_no += 1
                 resp_text = "Incorrect"
+                correct = 0
 
         # get RT for correct trials only
         if correct is 1:
             rt[iTrial] = t
         else:
             rt[iTrial] = np.nan
+            t = None
         
         tempArray = [iTrial, TrialType, resp_text, t, image_probe]
         responses.append(tempArray)
