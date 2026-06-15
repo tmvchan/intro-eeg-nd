@@ -140,6 +140,8 @@ def present(subject, session, eeg=None, save_fn=None, isi = 0.5, jitter = 0, dur
         units="norm",
     )
     
+    print("check 1")
+    
     # graphics
 
     def load_image(filename):
@@ -150,12 +152,14 @@ def present(subject, session, eeg=None, save_fn=None, isi = 0.5, jitter = 0, dur
     sad_paths = list(glob(os.path.join(FACES_EMOTIONS, "sad", "*.jpg")))
     angry_paths = list(glob(os.path.join(FACES_EMOTIONS, "angry", "*.jpg")))
     
+    print("check 2")
+    
     # Pre-load PsychoPy Image Objects so there is 0 disk latency during the trials
     happy = [visual.ImageStim(win=win, image=p) for p in happy_paths]
     sad = [visual.ImageStim(win=win, image=p) for p in sad_paths]
     angry = [visual.ImageStim(win=win, image=p) for p in angry_paths]
-    stim = [happy, sad, angry]
-    stimlist = []
+    #stim = [happy, sad, angry]
+    #stimlist = []
     
     # draw stimuli
     fCS_rt2 = fCS / math.sqrt(2)
@@ -209,6 +213,7 @@ def present(subject, session, eeg=None, save_fn=None, isi = 0.5, jitter = 0, dur
     count_angry = 0
     correct = 0
     rt = np.zeros((n_trials, 1))
+    print("check 3")
     
     show_instructions()
     
@@ -370,6 +375,7 @@ def present(subject, session, eeg=None, save_fn=None, isi = 0.5, jitter = 0, dur
             rt[iTrial] = t
         else:
             rt[iTrial] = np.nan
+            t = np.nan
         
         tempArray = [iTrial, TrialText, resp_text, t, image_probe]
         responses.append(tempArray)
