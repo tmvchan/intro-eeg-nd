@@ -31,7 +31,7 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    markernames = [1, 2] # 1: control, 2: thatcher
+    markernames = [1, 2, 3, 4] # 1: central face, 2: central house, 3: peripheral face, 4: peripheral house
 
     # code modified from https://github.com/djangraw/PsychoPyParadigms/blob/master/BasicExperiments/GoNoGoTask_d1.py
 
@@ -240,15 +240,17 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
                    
         # Draw probe stim
         if isYesTrial: # faces
-            label = 0
             image = choice(faces)
             image_probe = image.image
 
             if not isCenterTrial:
+                label = 2
                 if isLeftTrial:
                     image.pos = (-20.0, 0)
                 else:
                     image.pos = (20.0, 0)
+            else:
+                label = 0
 
             image.draw()
             win.logOnFlip(
@@ -263,15 +265,17 @@ def present(subject, session, eeg=None, save_fn=None, yesProb = 0.5, centerProb 
                     marker = markernames[label]
                 eeg.push_sample(marker=marker, timestamp=timestamp)
         else: # houses
-            label = 1
             image = choice(houses)
             image_probe = image.image
 
             if not isCenterTrial:
+                label = 3
                 if isLeftTrial:
                     image.pos = (-20.0, 0)
                 else:
                     image.pos = (20.0, 0)
+            else:
+                label = 1
 
             image.draw()
             win.logOnFlip(
